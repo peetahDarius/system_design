@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  labels:
+    app: auth
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: auth
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: auth
+        image: peetahdarius/auth
+        ports:
+        - containerPort: 5000
+        env:
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key:  MYSQL_PASSWORD
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: JWT_SECRET
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: auth-configmap
+                key: MYSQL_HOST
+          - name: MYSQL_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: auth-configmap
+                key: MYSQL_PORT
+          - name: MYSQL_DB
+            valueFrom:
+              configMapKeyRef:
+                name: auth-configmap
+                key: MYSQL_DB
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: auth-configmap
+                key: MYSQL_USER

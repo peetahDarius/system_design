@@ -1,0 +1,8 @@
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: peetahdarius/auth:latest
+    ports:
+      - 5000:5000
